@@ -3,23 +3,28 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, N
 import Root, { ROUTES } from "./components/root/Root";
 import { AppointmentsPage } from "./containers/appointmentsPage/AppointmentsPage";
 import { ContactsPage } from "./containers/contactsPage/ContactsPage";
+import { useState } from "react";
 
 function App() {
-  /*
-  Define state variables for 
-  contacts and appointments 
-  */
+  // State variables
+  const [contacts, setContacts] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
-  /*
-  Implement functions to add data to
-  contacts and appointments
-  */
+  // Callback function to add a new contact
+  const addContact = (name, phone, email) => {
+    setContacts(prevContacts => [...prevContacts, { name, phone, email }]);
+  };
+
+  // Callback function to add a new appointment
+  const addAppointment = (title, contact, date, time) => {
+    setAppointments(prevAppointments => [...prevAppointments, { title, contact, date, time }]);
+  };
 
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/" element={ <Root/> }>
       <Route index element={ <Navigate to={ROUTES.CONTACTS} replace/> }/>
-      <Route path={ROUTES.CONTACTS} element={ <ContactsPage /> /* Add props to ContactsPage */ }/>
-      <Route path={ROUTES.APPOINTMENTS} element={ <AppointmentsPage /> /* Add props to AppointmentsPage */ }/>
+      <Route path={ROUTES.CONTACTS} element={ <ContactsPage contacts={contacts} addContact={addContact}/>}/>
+      <Route path={ROUTES.APPOINTMENTS} element={ <AppointmentsPage appointments={appointments} contacts={contacts} addAppointment={addAppointment}/>}/>
     </Route>
   ));
   
